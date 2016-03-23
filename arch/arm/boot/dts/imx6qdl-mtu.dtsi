@@ -175,6 +175,13 @@
 		status = "okay";
 	};
 
+	beeper: beeper {
+		compatible = "gpio-beeper";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_gpio_beeper>;
+		gpios = <&gpio4 6 GPIO_ACTIVE_HIGH>;
+	};
+
 	v4l2_cap_0 {
 		compatible = "fsl,imx6q-v4l2-capture";
 		ipu_id = <0>;
@@ -324,6 +331,13 @@
 				MX6QDL_PAD_GPIO_0__CCM_CLKO1 			0x130b0			/* Audio Codec Clock */
 				/* Camera Clock */
 				MX6QDL_PAD_GPIO_3__CCM_CLKO2			0x130b0			/* Camera MCLK */
+			>;
+		};
+
+		/* Beeper */
+		pinctrl_gpio_beeper: gpiobeepergrp {
+			fsl,pins = <
+				MX6QDL_PAD_KEY_COL0__GPIO4_IO06			0x80000000
 			>;
 		};
 
