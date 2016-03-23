@@ -175,6 +175,43 @@
 		status = "okay";
 	};
 
+	leds {
+		compatible = "gpio-leds";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_gpio_leds>;
+		
+		red {
+			label = "red";
+#ifdef VAR_SOM_MX6_V2
+			gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+#else
+			gpios = <&gpio1 16 GPIO_ACTIVE_LOW>;
+#endif
+			linux,default-trigger = "none";
+		};
+					
+		green {
+			label = "green";
+#ifdef VAR_SOM_MX6_V2
+			gpios = <&gpio2 9 GPIO_ACTIVE_LOW>;
+#else
+			gpios = <&gpio1 18 GPIO_ACTIVE_LOW>;
+#endif
+			linux,default-trigger = "none";
+		};
+		
+		blue {
+			label = "blue";
+#ifdef VAR_SOM_MX6_V2
+			gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
+#else
+			gpios = <&gpio1 19 GPIO_ACTIVE_LOW>;
+#endif
+			linux,default-trigger = "none";
+		};
+					
+	};
+
 	beeper: beeper {
 		compatible = "gpio-beeper";
 		pinctrl-names = "default";
@@ -331,6 +368,21 @@
 				MX6QDL_PAD_GPIO_0__CCM_CLKO1 			0x130b0			/* Audio Codec Clock */
 				/* Camera Clock */
 				MX6QDL_PAD_GPIO_3__CCM_CLKO2			0x130b0			/* Camera MCLK */
+			>;
+		};
+
+		/* Leds */
+		pinctrl_gpio_leds: gpioledsgrp {
+			fsl,pins = <
+#ifdef VAR_SOM_MX6_V2
+				MX6QDL_PAD_GPIO_9__GPIO1_IO09			0x80000000
+				MX6QDL_PAD_SD4_DAT1__GPIO2_IO09			0x80000000
+				MX6QDL_PAD_GPIO_1__GPIO1_IO01			0x80000000
+#else
+				MX6QDL_PAD_SD1_DAT0__GPIO1_IO16			0x80000000 
+				MX6QDL_PAD_SD1_CMD__GPIO1_IO18			0x80000000
+				MX6QDL_PAD_SD1_DAT2__GPIO1_IO19			0x80000000
+#endif
 			>;
 		};
 
