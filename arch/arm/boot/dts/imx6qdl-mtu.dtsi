@@ -838,13 +838,10 @@
 	status = "okay";
 };
 
-&usdhc1 {	/* uSDHC2, MMC/SD card */
+&usdhc2 {	/* uSDHC2, MMC/SD card */
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_usdhc2_2>;
-	cd-gpios = <&gpio4 14 0>;
-#ifndef VAR_SOM_SOLO_VSC
-	wp-gpios = <&gpio4 15 0>;
-#endif
+	cd-gpios = <&gpio4 14 GPIO_ACTIVE_LOW>;
 	no-1-8-v;
 	keep-power-in-suspend;
 	enable-sdio-wakeup;
