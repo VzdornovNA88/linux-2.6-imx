@@ -344,6 +344,21 @@
 	pinctrl-0 = <&pinctrl_i2c3_3>;
 	status = "okay";
 
+	/* touchscreen */
+	ssd2533_tsc@48 {
+	    pinctrl-names = "default";
+	    pinctrl-0 = <&pinctrl_touchscreenIRQ>;
+		compatible = "ssl,ssd2533-tsc";
+		reg = <0x48>;
+		interrupt-parent = <&gpio3>;
+#ifdef VAR_SOM_MX6_V2
+		interrupts = <20 0>;
+#else
+		interrupts = <7 0>;
+#endif
+		x-size = <640>;
+		y-size = <480>;
+	};
 };
 
 &iomuxc {
@@ -397,6 +412,17 @@
 		pinctrl_gpio_beeper: gpiobeepergrp {
 			fsl,pins = <
 				MX6QDL_PAD_KEY_COL0__GPIO4_IO06			0x80000000
+			>;
+		};
+
+		/* Touch ssd2533-tsc IRQ*/
+		pinctrl_touchscreenIRQ: touchscreenIRQgrp {
+			fsl,pins = <
+#ifdef VAR_SOM_MX6_V2
+				MX6QDL_PAD_EIM_D20__GPIO3_IO20  		0x80000000
+#else
+				MX6QDL_PAD_EIM_DA7__GPIO3_IO07			0x80000000
+#endif
 			>;
 		};
 
