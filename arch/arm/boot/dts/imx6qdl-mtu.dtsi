@@ -249,6 +249,11 @@
 	pinctrl-0 = <&pinctrl_i2c1_2>;
 	status = "okay";
 
+	/* m41t62 RTC module */
+	rtc: m41t62@68 {
+		compatible = "stm,m41t62";
+		reg = <0x68>;
+	};
 };
 
 &i2c2 {
