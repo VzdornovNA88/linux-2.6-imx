@@ -373,6 +373,19 @@ config TOUCHSCREEN_S3C2410
 	  To compile this driver as a module, choose M here: the
 	  module will be called s3c2410_ts.
 
+config TOUCHSCREEN_SSD2533
+	tristate "Solomon Systech Limited | SSD2533 touchscreen input driver"
+	depends on I2C
+	help
+	  Say Y here if you have a touchscreen interface using the
+	  SSD2533 controller, and your board-specific
+	  initialization code includes that in its table of I2C devices.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called ssd2533.
+
 config TOUCHSCREEN_GUNZE
 	tristate "Gunze AHL-51S touchscreen"
 	select SERIO
