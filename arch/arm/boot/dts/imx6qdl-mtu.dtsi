@@ -319,6 +319,13 @@
 		pagesize = <1>;
 	};
 
+	/* VAR-SOM eeprom */
+	som_eeprom: eeprom@56 {
+		compatible = "at24,24c04";
+		reg = <0x56>;
+		read-only;
+	};
+
 	codec: tlv320aic3x@1b {
 		compatible = "ti,tlv320aic3x";
 		reg = <0x1b>;
