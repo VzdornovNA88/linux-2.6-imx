@@ -306,6 +306,13 @@
 	pinctrl-0 = <&pinctrl_i2c2_2>;
 	status = "okay";
 
+	/* eeprom */
+	fram: eeprom@50 {
+		compatible = "at24,24c64";
+		reg = <0x50>;
+		pagesize = <1>;
+	};
+
 	codec: tlv320aic3x@1b {
 		compatible = "ti,tlv320aic3x";
 		reg = <0x1b>;
