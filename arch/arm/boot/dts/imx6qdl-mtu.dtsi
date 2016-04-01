@@ -293,6 +293,12 @@
 	pinctrl-0 = <&pinctrl_i2c1_2>;
 	status = "okay";
 
+	/* light sensor */
+    	apds9301@29 {
+		compatible = "avago,apds9301";
+		reg = <0x29>;
+	};
+
 	/* m41t62 RTC module */
 	rtc: m41t62@68 {
 		compatible = "stm,m41t62";

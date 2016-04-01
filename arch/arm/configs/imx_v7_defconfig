@@ -3588,7 +3588,7 @@ CONFIG_VF610_ADC=y
 #
 # CONFIG_ADJD_S311 is not set
 # CONFIG_AL3320A is not set
-# CONFIG_APDS9300 is not set
+CONFIG_APDS9300=y
 # CONFIG_CM32181 is not set
 # CONFIG_CM3232 is not set
 # CONFIG_CM3323 is not set
