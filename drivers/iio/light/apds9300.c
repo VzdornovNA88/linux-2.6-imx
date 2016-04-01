@@ -1,7 +1,7 @@
 /*
- * apds9300.c - IIO driver for Avago APDS9300 ambient light sensor
+ * apds9300.c - IIO driver for Avago APDS930x ambient light sensor
  *
- * Copyright 2013 Oleksandr Kravchenko <o.v.kravchenko@globallogic.com>
+ * Copyright 2016 Andrew Panov <andrew@npf-ati.ru>
  *
  * This file is subject to the terms and conditions of version 2 of
  * the GNU General Public License.  See the file COPYING in the main
@@ -32,6 +32,7 @@
 #define APDS9300_THRESHLOWLOW	0x02 /* Low byte of low interrupt threshold */
 #define APDS9300_THRESHHIGHLOW	0x04 /* Low byte of high interrupt threshold */
 #define APDS9300_INTERRUPT	0x06 /* Interrupt control */
+#define APDS9300_IDRegister	0x0A /* ID Register */
 #define APDS9300_DATA0LOW	0x0c /* Low byte of ADC channel 0 */
 #define APDS9300_DATA1LOW	0x0e /* Low byte of ADC channel 1 */
 
@@ -53,6 +54,7 @@ struct apds9300_data {
 	int thresh_low;
 	int thresh_hi;
 	int intr_en;
+	int PartNum;
 };
 
 /* Lux calculation */
@@ -65,13 +67,16 @@ static const u16 apds9300_lux_ratio[] = {
 	347, 358, 368, 379, 390, 400,
 };
 
-static unsigned long apds9300_calculate_lux(u16 ch0, u16 ch1)
+static void apds9300_calculate_lux(u16 ch0, u16 ch1, int *val, int *val_micro)
 {
 	unsigned long lux, tmp;
 
 	/* avoid division by zero */
-	if (ch0 == 0)
-		return 0;
+	if (ch0 == 0) {
+		*val = 0;
+		*val_micro = 0;
+		return;
+	}
 
 	tmp = DIV_ROUND_UP(ch1 * 100, ch0);
 	if (tmp <= 52) {
@@ -87,7 +92,37 @@ static unsigned long apds9300_calculate_lux(u16 ch0, u16 ch1)
 		lux = 0;
 	}
 
-	return lux / 100000;
+	*val = lux / 100000;
+	*val_micro = (lux % 100000) * 10;
+}
+
+static void apds9301_calculate_lux(u16 ch0, u16 ch1, int *val, int *val_micro)
+{
+	unsigned long lux, tmp;
+
+	/* avoid division by zero */
+	if (ch0 == 0) {
+		*val = 0;
+		*val_micro = 0;
+		return;
+	}
+
+	tmp = DIV_ROUND_UP(ch1 * 100, ch0);
+	if (tmp <= 50) {
+		lux = 3040 * ch0 - (unsigned long)DIV_ROUND_UP_ULL(ch0
+				* apds9300_lux_ratio[tmp] * 6200ull, 1000);
+	} else if (tmp <= 61) {
+		lux = 2240 * ch0 - 3100 * ch1;
+	} else if (tmp <= 80) {
+		lux = 1280 * ch0 - 1530 * ch1;
+	} else if (tmp <= 130) {
+		lux = 146 * ch0 - 112 * ch1;
+	} else {
+		lux = 0;
+	}
+
+	*val = lux / 100000;
+	*val_micro = (lux % 100000) * 10;
 }
 
 static int apds9300_get_adc_val(struct apds9300_data *data, int adc_number)
@@ -255,8 +290,14 @@ static int apds9300_read_raw(struct iio_dev *indio_dev,
 			ret = ch1;
 			break;
 		}
-		*val = apds9300_calculate_lux(ch0, ch1);
-		ret = IIO_VAL_INT;
+		if (data->PartNum == 9300)
+			apds9300_calculate_lux(ch0, ch1, val, val2);
+		else if (data->PartNum == 9301)
+			apds9301_calculate_lux(ch0, ch1, val, val2);
+		else {
+			*val = 0; *val2 = 0; 
+		}
+		ret = IIO_VAL_INT_PLUS_MICRO;
 		break;
 	case IIO_INTENSITY:
 		ret = apds9300_get_adc_val(data, chan->channel);
@@ -417,6 +458,14 @@ static int apds9300_probe(struct i2c_client *client,
 	data = iio_priv(indio_dev);
 	i2c_set_clientdata(client, indio_dev);
 	data->client = client;
+	data->PartNum = id->driver_data;
+
+	ret = i2c_smbus_read_byte_data(data->client, APDS9300_IDRegister | APDS9300_CMD);
+	if (ret < 0)
+		goto err;
+
+	dev_info(&client->dev, "APDS930x Ambient light sensor, Part Number %02x, Rev: %02x\n",
+		ret >> 4, ret & 0xf);
 
 	ret = apds9300_chip_init(data);
 	if (ret < 0)
@@ -506,7 +555,8 @@ static SIMPLE_DEV_PM_OPS(apds9300_pm_ops, apds9300_suspend, apds9300_resume);
 #endif
 
 static struct i2c_device_id apds9300_id[] = {
-	{ APDS9300_DRV_NAME, 0 },
+	{ "apds9300", 9300 },
+	{ "apds9301", 9301 },
 	{ }
 };
 
@@ -525,7 +575,7 @@ static struct i2c_driver apds9300_driver = {
 
 module_i2c_driver(apds9300_driver);
 
-MODULE_AUTHOR("Kravchenko Oleksandr <o.v.kravchenko@globallogic.com>");
-MODULE_AUTHOR("GlobalLogic inc.");
-MODULE_DESCRIPTION("APDS9300 ambient light photo sensor driver");
+MODULE_AUTHOR("Andrew Panov <andrew@npf-ati.ru>");
+MODULE_AUTHOR("NPF ATI");
+MODULE_DESCRIPTION("APDS930x ambient light photo sensor driver");
 MODULE_LICENSE("GPL");
