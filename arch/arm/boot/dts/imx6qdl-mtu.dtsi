@@ -67,6 +67,26 @@
 			regulator-always-on;
 		};
 
+		reg_audio_amp: regulator@4 {
+			compatible = "regulator-fixed";
+			regulator-name = "audio-amp";
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+                        gpio = <&gpio4 7 GPIO_ACTIVE_HIGH>;
+			startup-delay-us = <250000>;
+			enable-active-high;
+		};
+
+		reg_speaker_en: regulator@5 {
+			compatible = "regulator-fixed";
+			regulator-name = "speaker-en";
+			regulator-min-microvolt = <24000000>;
+			regulator-max-microvolt = <24000000>;
+                        gpio = <&gpio4 10 GPIO_ACTIVE_HIGH>;
+//			startup-delay-us = <50000>;
+			enable-active-high;
+		};
+
 #ifdef VAR_SOM_SOLO_VSC
 		touch_3v3_regulator: touch_3v3_regulator {
 			compatible = "regulator-fixed";
@@ -98,10 +118,14 @@
 		model = "tlv320aic3x-audio";
 		cpu-dai = <&ssi2>;
 		audio-codec = <&codec>;
+		spkr_en-supply = <&reg_speaker_en>;
+		audio-amp-supply = <&reg_audio_amp>;
 		audio-routing =
 			/* Headphone connected to HPLOUT, HPROUT */
 			"Ext Spk",       	"HPLOUT",
 			"Ext Spk",       	"HPROUT",
+			"Ext Spk",       	"audio-amp",
+			"Ext Spk",       	"speaker-en",
 			"Line In Jack",		"LINE1L",
 			"Line In Jack",		"LINE1R";
 		mux-int-port = <2>;
@@ -403,6 +427,9 @@
 				MX6QDL_PAD_GPIO_0__CCM_CLKO1 			0x130b0			/* Audio Codec Clock */
 				/* Camera Clock */
 				MX6QDL_PAD_GPIO_3__CCM_CLKO2			0x130b0			/* Camera MCLK */
+				/* Audio - Spkr control */
+				MX6QDL_PAD_KEY_COL2__GPIO4_IO10			0x80000000		/* Spkr relay */
+				MX6QDL_PAD_KEY_ROW0__GPIO4_IO07			0x80000000		/* Mute */
 			>;
 		};
 
