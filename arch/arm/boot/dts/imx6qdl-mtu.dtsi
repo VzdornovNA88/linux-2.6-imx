@@ -609,6 +609,14 @@
 			>;
 		};
 
+		/* GPS/GLONASS Uart5 support */
+		pinctrl_uart5_4: uart5grp-4 {	/* RX/TX */
+			fsl,pins = <
+				MX6QDL_PAD_KEY_COL1__UART5_TX_DATA 	0x1b0b1
+				MX6QDL_PAD_KEY_ROW1__UART5_RX_DATA 	0x1b0b1
+			>;
+		};
+
 		pinctrl_usbotg_var: usbotggrp-3 {
 			fsl,pins = <
 				MX6QDL_PAD_GPIO_4__GPIO1_IO04 		0x17059
@@ -840,6 +848,15 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_uart2_3>;
 	fsl,uart-has-rtscts;
+	status = "okay";
+};
+
+/* GPS/GLONASS UART */
+&uart5 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart5_4>;
+	//fsl,dte-mode;
+	current-speed = <115200>;
 	status = "okay";
 };
 
