@@ -113,6 +113,15 @@
 	};
 #endif
 
+#ifdef VAR_SOM_MX6_V2
+	pps-gps {
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_gpio_pps>;
+		compatible = "pps-gpio";
+		gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
+	};
+#endif
+
 	sound {
 		compatible = "fsl,imx6q-var-som-tlv320aic3x", "fsl,imx-audio-tlv320aic3x";
 		model = "tlv320aic3x-audio";
@@ -614,6 +623,13 @@
 			fsl,pins = <
 				MX6QDL_PAD_KEY_COL1__UART5_TX_DATA 	0x1b0b1
 				MX6QDL_PAD_KEY_ROW1__UART5_RX_DATA 	0x1b0b1
+			>;
+		};
+
+		/* PPS from GPS*/
+		pinctrl_gpio_pps: gpioppsgrp {
+			fsl,pins = <
+				MX6QDL_PAD_EIM_D19__GPIO3_IO19			0x80000000
 			>;
 		};
 
