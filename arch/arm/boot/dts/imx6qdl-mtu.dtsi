@@ -947,15 +947,16 @@
 	status = "okay";
 };
 
-/* disable for backlight
-&usdhc2 {	/* uSDHC1, eMMC 
+#ifdef VAR_SOM_MX6_V2
+&usdhc1 {	/* uSDHC1, eMMC */
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_usdhc1_1>;
 	non-removable;
 	keep-power-in-suspend;
 	enable-sdio-wakeup;
 	status = "okay";
-};*/
+};
+#endif
 
 &wdog1 {
 	status = "disabled";
