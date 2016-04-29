@@ -122,6 +122,21 @@
 	};
 #endif
 
+	gpio-keys {
+		compatible = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_gpio_keys>;
+
+		ignition {
+			label = "Ignition key";
+			gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
+			//linux,code = <KEY_COFFEE>; /* AL Terminal Lock/Screensaver */
+			linux,input-type = <5>; // EV_SW
+			linux,code = <0>; /* SW_LID - lid shut */
+			gpio-key,wakeup;
+		};
+	};
+
 	sound {
 		compatible = "fsl,imx6q-var-som-tlv320aic3x", "fsl,imx-audio-tlv320aic3x";
 		model = "tlv320aic3x-audio";
@@ -507,6 +522,12 @@
 		pinctrl_enet_irq: enetirqgrp {
 			fsl,pins = <
 				MX6QDL_PAD_GPIO_6__ENET_IRQ		0x000b1
+			>;
+		};
+
+		pinctrl_gpio_keys: gpio_keysgrp {
+			fsl,pins = <
+				MX6QDL_PAD_EIM_D21__GPIO3_IO21  	0x80000000
 			>;
 		};
 
