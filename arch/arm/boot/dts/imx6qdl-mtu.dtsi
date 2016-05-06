@@ -260,6 +260,23 @@
 					
 	};
 
+	modem {
+		compatible = "gpio-leds";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_gpio_modem_power>;
+		
+		modem-power {
+			label = "modem-power";
+#ifdef VAR_SOM_MX6_V2
+			gpios = <&gpio2 11 GPIO_ACTIVE_HIGH>;
+#else
+			gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
+#endif
+			linux,default-trigger = "none";
+			default-state = "off";
+		};
+	};
+					
 	beeper: beeper {
 		compatible = "gpio-beeper";
 		pinctrl-names = "default";
@@ -476,6 +493,13 @@
 		pinctrl_gpio_beeper: gpiobeepergrp {
 			fsl,pins = <
 				MX6QDL_PAD_KEY_COL0__GPIO4_IO06			0x80000000
+			>;
+		};
+
+		/* Modem Power */
+		pinctrl_gpio_modem_power: gpiomodempowergrp {
+			fsl,pins = <
+				MX6QDL_PAD_SD4_DAT3__GPIO2_IO11			0x80000000
 			>;
 		};
 
