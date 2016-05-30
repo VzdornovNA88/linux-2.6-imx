@@ -364,6 +364,44 @@
 		reg = <0x29>;
 	};
 
+	/* Videodecoder */
+	tvp5150: tvp5150@5d {
+#if 0
+		compatible = "ti,tvp5150";
+		reg = <0x5d>;
+		pdn-gpios = <&gpio5 20 GPIO_ACTIVE_LOW>;
+		
+		connectors {
+			composite0 {
+				label = "Composite0";
+				input = <TVP5150_COMPOSITE0>;
+			};
+
+			composite1 {
+				label = "Composite1";
+				input = <TVP5150_COMPOSITE1>;
+			};
+		};
+
+		port {
+			/* Parallel CSI-0 bus endpoint */
+			tvp5150_1: endpoint {
+				remote-endpoint = <&mipi_csi>;
+			};
+		};
+#else
+		compatible = "ti,tvp5150";
+		reg = <0x5d>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_ipu1_2>;
+		clocks = <&clks IMX6QDL_CLK_CKO>;
+		clock-names = "csi_mclk";
+		csi_id = <0>;
+		mclk = <27000000>;
+		mclk_source = <0>;
+#endif
+	};
+
 	/* m41t62 RTC module */
 	rtc: m41t62@68 {
 		compatible = "stm,m41t62";
