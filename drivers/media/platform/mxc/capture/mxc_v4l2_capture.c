@@ -2250,7 +2250,11 @@ static long mxc_v4l_do_ioctl(struct file *file,
 	case VIDIOC_ENUMSTD: {
 		struct v4l2_standard *e = arg;
 		pr_debug("   case VIDIOC_ENUMSTD\n");
-		*e = cam->standard;
+		if (e->index != 0)
+			retval = -EINVAL;
+		else
+			*e = cam->standard;
+			e->index = 0;
 		break;
 	}
 
