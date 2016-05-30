@@ -1420,11 +1420,11 @@ static int mxc_v4l2_s_std(cam_data *cam, v4l2_std_id e)
 {
 	pr_debug("In mxc_v4l2_s_std %Lx\n", e);
 
-	if (e == V4L2_STD_PAL) {
+	if (e & V4L2_STD_PAL && !(e & V4L2_STD_NTSC)) {
 		pr_debug("   Setting standard to PAL %Lx\n", V4L2_STD_PAL);
 		cam->standard.id = V4L2_STD_PAL;
 		video_index = TV_PAL;
-	} else if (e == V4L2_STD_NTSC) {
+	} else if (e & V4L2_STD_NTSC && !(e & V4L2_STD_PAL)) {
 		pr_debug("   Setting standard to NTSC %Lx\n",
 				V4L2_STD_NTSC);
 		/* Get rid of the white dot line in NTSC signal input */
