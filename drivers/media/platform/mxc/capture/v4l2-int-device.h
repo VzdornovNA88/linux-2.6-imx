@@ -147,6 +147,7 @@ struct v4l2_if_type_bt656 {
 	unsigned nobt_hs_inv:1;
 	/* Vs polarity. 0 is active high, 1 active low. */
 	unsigned nobt_vs_inv:1;
+	unsigned interlace:1;
 	enum v4l2_if_type_bt656_mode mode;
 	/* Minimum accepted bus clock for slave (in Hz). */
 	u32 clock_min;
