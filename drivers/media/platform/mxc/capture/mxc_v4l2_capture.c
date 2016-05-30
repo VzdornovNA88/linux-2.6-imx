@@ -1456,34 +1456,29 @@ static int mxc_v4l2_s_std(cam_data *cam, v4l2_std_id e)
  *
  * @param cam	      structure cam_data *
  *
- * @param e	      structure v4l2_streamparm *
+ * @param e	      structure v4l2_std_id *
  *
  * @return  status    0 success, EINVAL failed
  */
 static int mxc_v4l2_g_std(cam_data *cam, v4l2_std_id *e)
 {
-	struct v4l2_format tv_fmt;
-
 	pr_debug("In mxc_v4l2_g_std\n");
 
 	if (cam->device_type == 1) {
 		/* Use this function to get what the TV-In device detects the
-		 * format to be. pixelformat is used to return the std value
+		 * format to be. vidioc_int_querystd is used to return the std value
 		 * since the interface has no vidioc_g_std.*/
-		tv_fmt.type = V4L2_BUF_TYPE_PRIVATE;
-		vidioc_int_g_fmt_cap(cam->sensor, &tv_fmt);
+		vidioc_int_querystd(cam->sensor, e);
 
 		/* If the TV-in automatically detects the standard, then if it
 		 * changes, the settings need to change. */
 		if (cam->standard_autodetect) {
-			if (cam->standard.id != tv_fmt.fmt.pix.pixelformat) {
+			if (cam->standard.id != *e) {
 				pr_debug("MVC: mxc_v4l2_g_std: "
 					"Changing standard\n");
-				mxc_v4l2_s_std(cam, tv_fmt.fmt.pix.pixelformat);
+				mxc_v4l2_s_std(cam, *e);
 			}
 		}
-
-		*e = tv_fmt.fmt.pix.pixelformat;
 	}
 
 	return 0;
