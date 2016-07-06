@@ -270,7 +270,7 @@
 #ifdef VAR_SOM_MX6_V2
 			gpios = <&gpio2 11 GPIO_ACTIVE_HIGH>;
 #else
-			gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio1 21 GPIO_ACTIVE_LOW>;
 #endif
 			linux,default-trigger = "none";
 			default-state = "off";
@@ -537,7 +537,11 @@
 		/* Modem Power */
 		pinctrl_gpio_modem_power: gpiomodempowergrp {
 			fsl,pins = <
+#ifdef VAR_SOM_MX6_V2
 				MX6QDL_PAD_SD4_DAT3__GPIO2_IO11			0x80000000
+#else
+				MX6QDL_PAD_SD1_DAT3__GPIO1_IO21			0x80000000
+#endif
 			>;
 		};
 
